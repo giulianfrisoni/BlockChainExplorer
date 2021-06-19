@@ -22,7 +22,7 @@ function App() {
                 <Route exact path="/blocktable" render={() => (
                 <h3>Please select a blockHash.</h3>
                   )}/>
-                <Route path="/block/:blockHash" component={BlockTable}/>
+                <Route path="/blocktable/:blockHash" component={BlockTable}/>
               </div>
             </Router>
           </div>
