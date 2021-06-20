@@ -11,8 +11,9 @@ import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom'
 import { Typography } from '@material-ui/core';
 import Web3 from 'web3';
+import { DataGrid } from '@material-ui/data-grid';
 /* INFURA NODE */
-/* var web3 = new Web3(new Web3.providers.HttpProvider('https://ropsten.infura.io/v3/ef64c86f37a84cc9a7929ba567d8138d')); */
+/*var web3 = new Web3(new Web3.providers.HttpProvider('https://ropsten.infura.io/v3/ef64c86f37a84cc9a7929ba567d8138d'));*/
 /* GANACHE LOCAL NODE */
 var web3 = new Web3(new Web3.providers.HttpProvider('HTTP://127.0.0.1:7545'));
 
@@ -21,7 +22,8 @@ class BlockTable extends Component {
     super(props);
     this.state = {
       blocktable: [],
-      block_hash: props.match.params.blockHash
+      block_hash: props.match.params.blockHash,
+      block_transactions: []
     }
   }
   componentWillMount() {
@@ -30,6 +32,7 @@ class BlockTable extends Component {
   }
   getBlockState(block_hid) {
     var currBlockObj = web3.eth.getBlock(this.block_hash);
+
     // Set the Component state
     this.setState({
       block_id: currBlockObj.number,
@@ -37,6 +40,25 @@ class BlockTable extends Component {
       block_ts: Date(parseInt(this.state.blocktable.timestamp, 10)).toString(),
       block_txs: parseInt(currBlockObj.transactions.slice().length, 10),
       block: currBlockObj
+    })
+    currBlockObj.transactions.forEach(element => {
+      this.getTransactionsState(element);
+    });
+
+  }
+  getTransactionsState(transaction_hid) {
+    var currHashObj = web3.eth.getTransaction(transaction_hid);
+    var cur_hash_table = this.state.block_transactions;
+    var gasineth = web3.fromWei(currHashObj.gasPrice.toNumber(), "ether" ) ;
+    var valueineth = web3.fromWei(currHashObj.value.toNumber(), "ether" );
+    cur_hash_table.push({
+      id: currHashObj.hash,
+      gas: gasineth,
+      value: valueineth,
+    })
+    // Set the Component state
+    this.setState({
+      block_transactions: cur_hash_table,
     })
   }
 
@@ -51,6 +73,12 @@ class BlockTable extends Component {
   }
 
   render() {
+    const columns = [
+      { field: 'id', headerName: 'Transaction Hash', flex: 0.5 },
+      { field: 'value', headerName: 'Amount', flex: 0.25 },
+      { field: 'gas', headerName: 'Gas amount' , flex: 0.25},
+
+    ];
     const block = this.state.block;
     return (
       <div className="Block">
@@ -80,10 +108,25 @@ class BlockTable extends Component {
                 </Table>
               </TableContainer>
             </Paper>
+            <Paper>
+              <Typography variant="h2">Viewing Data of  {this.state.block_txs} Transactions</Typography>
+              <TableContainer >
+                <div style={{ height: 400, width: '100%' }}>
+                  <DataGrid
+                    rows={this.state.block_transactions}
+                    columns={columns}
+                    pageSize={10}
+                    checkboxSelection
+                    disableSelectionOnClick
+
+                  />
+                </div>
+              </TableContainer>
+            </Paper>
           </Grid>
           <Paper>
             <Grid item xs={12}>
-              <Button size="large" variant="contained" color="black" component={Link} to={`/`}>
+              <Button size="large" variant="contained" color="primary" component={Link} to={`/`}>
                 Go Back
               </Button>
             </Grid>
