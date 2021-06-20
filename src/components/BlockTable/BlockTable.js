@@ -49,8 +49,8 @@ class BlockTable extends Component {
   getTransactionsState(transaction_hid) {
     var currHashObj = web3.eth.getTransaction(transaction_hid);
     var cur_hash_table = this.state.block_transactions;
-    var gasineth = web3.fromWei(currHashObj.gasPrice.toNumber(), "ether" ) ;
-    var valueineth = web3.fromWei(currHashObj.value.toNumber(), "ether" );
+    var gasineth = web3.fromWei(currHashObj.gasPrice.toNumber(), "ether");
+    var valueineth = web3.fromWei(currHashObj.value.toNumber(), "ether");
     cur_hash_table.push({
       id: currHashObj.hash,
       gas: gasineth,
@@ -76,7 +76,7 @@ class BlockTable extends Component {
     const columns = [
       { field: 'id', headerName: 'Transaction Hash', flex: 0.5 },
       { field: 'value', headerName: 'Amount', flex: 0.25 },
-      { field: 'gas', headerName: 'Gas amount' , flex: 0.25},
+      { field: 'gas', headerName: 'Gas amount', flex: 0.25 },
 
     ];
     const block = this.state.block;
@@ -131,6 +131,9 @@ class BlockTable extends Component {
               </Button>
             </Grid>
           </Paper>
+          <Grid item xs={12}>
+            <Typography variant="caption">Developed by Giulian Frisoni v1.0.1 June 19 2021</Typography>
+           </Grid> 
         </Grid>
       </div>
     );

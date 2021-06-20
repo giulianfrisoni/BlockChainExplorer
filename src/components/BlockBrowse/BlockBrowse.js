@@ -134,6 +134,9 @@ class BlockBrowse extends Component {
                         </div>
                     </TableContainer>
                     </Box>
+                    <Box pt={3}>
+                    <Typography variant="caption">Developed by Giulian Frisoni v1.0.1 June 19 2021</Typography>
+                    </Box>
                 </Box>
             </div>
         );
